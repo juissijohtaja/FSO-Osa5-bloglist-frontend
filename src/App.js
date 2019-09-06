@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react'
+
+// Components
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 
+// Services
 import blogService from './services/blogs'
 import loginService from './services/login'
+
+// Styles
 import './index.css'
 
 const App = () => {
@@ -239,33 +245,6 @@ const App = () => {
     }
   }
 
-  const loginForm = () => (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </div>
-  )
-
   const blogObjectForm = () => {
     return (
       <div>
@@ -286,7 +265,12 @@ const App = () => {
       <Notification notification={notification} />
 
       {user === null ?
-        loginForm() :
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword} /> :
         <div>
           <p>{user.name} logged in </p>
           <button onClick={() => handleLogout()}>Logout</button>
