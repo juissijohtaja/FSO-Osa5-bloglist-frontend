@@ -1,7 +1,13 @@
 import React, { useState, useImperativeHandle } from 'react'
+import blogService from '../services/blogs'
 
 const Blog = React.forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false)
+  //console.log('Blog props', props)
+
+  const setBlogs = props.setBlogs
+  const setNotification = props.setNotification
+  const onClickTest = props.onClickTest
 
 
   //const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -27,13 +33,69 @@ const Blog = React.forwardRef((props, ref) => {
     }
   }
 
+  const updateBlog = async (newBlogObject, id) => {
+    const newObject = newBlogObject
+    try {
+      await blogService.update(id, newObject)
+      setBlogs(await blogService.getAll())
+
+      const newNotification = {
+        message: 'New like added!',
+        style: 'success'
+      }
+      setNotification( newNotification )
+      setTimeout(() => {
+        setNotification({ message: null, style: null })
+      }, 5000)
+
+    } catch (exception) {
+      const newNotification = {
+        message: 'Like not added.',
+        style: 'failure'
+      }
+      setNotification( newNotification )
+      setTimeout(() => {
+        setNotification({ message: null, style: null })
+      }, 5000)
+    }
+  }
+
+  const removeBlog = async (id) => {
+    console.log('REMOVE id', id)
+    if (window.confirm('Do you really want to remove this post?')) {
+      try {
+        await blogService.remove(id)
+        setBlogs(await blogService.getAll())
+
+        const newNotification = {
+          message: 'Blog removed!',
+          style: 'success'
+        }
+        setNotification( newNotification )
+        setTimeout(() => {
+          setNotification({ message: null, style: null })
+        }, 5000)
+
+      } catch (exception) {
+        const newNotification = {
+          message: 'Blog not removed.',
+          style: 'failure'
+        }
+        setNotification( newNotification )
+        setTimeout(() => {
+          setNotification({ message: null, style: null })
+        }, 5000)
+      }
+    }
+  }
+
   const handleLike = async (event) => {
     event.preventDefault()
 
     console.log('I Like!')
-    console.log('event.target', event.target)
+    //console.log('event.target', event.target)
     const blog = props.blog
-    const updateBlog = props.updateBlog
+    //const updateBlog = props.updateBlog
 
     console.log('likes before', blog.likes)
     blog.likes += 1
@@ -53,7 +115,7 @@ const Blog = React.forwardRef((props, ref) => {
   const handleRemove = async (event) => {
     event.preventDefault()
     const blog = props.blog
-    const removeBlog = props.removeBlog
+    //const removeBlog = props.removeBlog
     console.log('props.blog.user.id', props.blog.user.id)
 
     console.log('Remove this!')
@@ -77,21 +139,21 @@ const Blog = React.forwardRef((props, ref) => {
   }
 
   return (
-    <div style={blogStyle}>
-      <div>
-        <div onClick={toggleVisibility} style={blogHeaderStyle}>
-          <h3>
+    <div style={blogStyle} className='blogContentFull'>
+      <div className='blogContent'>
+        <div onClick={toggleVisibility} style={blogHeaderStyle} className='blogDefault'>
+          <h3 className='blogTitle'>
             {props.blog.title}
           </h3>
-          <p>
+          <p className='blogAuthor'>
             {props.blog.author}
           </p>
         </div>
       </div>
-      <div style={showWhenVisible} >
+      <div style={showWhenVisible} className='blogMore' >
         <div onClick={toggleVisibility} style={blogContentStyle} >
-          <p>{props.blog.likes} likes <button onClick={handleLike}>Like this</button></p>
-          <p>
+          <p className='blogLikes'>{props.blog.likes} likes <button onClick={onClickTest? onClickTest : handleLike}>Like this</button></p>
+          <p className='blogUrl'>
             Website: <a href={props.blog.url} target="_blank" rel="noopener noreferrer">{props.blog.url}</a> <br/>Added by: {userName()}
           </p>
           <RemoveButton />

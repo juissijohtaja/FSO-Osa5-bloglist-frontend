@@ -51,13 +51,18 @@ const App = () => {
     console.log('Joku username', user.username)
     const loggedUser = user.username
     return blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-      <Blog
-        key={blog.id}
-        blog={blog}
-        updateBlog={updateBlog}
-        removeBlog={removeBlog}
-        showRemoveButton={loggedUser === blog.user.username}
-      />
+    {
+      console.log('BLOOOOG', blog)
+
+      return(
+        <Blog
+          key={blog.id}
+          blog={blog}
+          setBlogs={setBlogs}
+          setNotification={setNotification}
+          showRemoveButton={loggedUser === blog.user.username}
+        />
+      )}
     )}
 
   const blogFormRef = React.createRef()
@@ -103,7 +108,7 @@ const App = () => {
     }
   }
 
-  const updateBlog = async (newBlogObject, id) => {
+  /* const updateBlog = async (newBlogObject, id) => {
     const newObject = newBlogObject
     try {
       await blogService.update(id, newObject)
@@ -128,9 +133,9 @@ const App = () => {
         setNotification({ message: null, style: null })
       }, 5000)
     }
-  }
+  } */
 
-  const removeBlog = async (id) => {
+  /* const removeBlog = async (id) => {
     console.log('REMOVE id', id)
     if (window.confirm('Do you really want to remove this post?')) {
       try {
@@ -157,7 +162,7 @@ const App = () => {
         }, 5000)
       }
     }
-  }
+  } */
 
   const handleBlogObjectChange = (event) => {
     console.log({ [event.target.name]: event.target.value })
