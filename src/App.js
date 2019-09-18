@@ -11,6 +11,9 @@ import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+// Custom Hooks
+import  { useField } from './hooks'
+
 // Styles
 import './index.css'
 
@@ -23,10 +26,13 @@ const App = () => {
       url: '',
     }
   )
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  //const [username, setUsername] = useState('')
+  //const [password, setPassword] = useState('')
+  const username = useField('text')
+  const password = useField('password')
   const [user, setUser] = useState(null)
   const [ notification, setNotification ] = useState({ message: null, style: null })
+
 
 
   useEffect(() => {
@@ -108,62 +114,6 @@ const App = () => {
     }
   }
 
-  /* const updateBlog = async (newBlogObject, id) => {
-    const newObject = newBlogObject
-    try {
-      await blogService.update(id, newObject)
-      setBlogs(await blogService.getAll())
-
-      const newNotification = {
-        message: 'New like added!',
-        style: 'success'
-      }
-      setNotification( newNotification )
-      setTimeout(() => {
-        setNotification({ message: null, style: null })
-      }, 5000)
-
-    } catch (exception) {
-      const newNotification = {
-        message: 'Like not added.',
-        style: 'failure'
-      }
-      setNotification( newNotification )
-      setTimeout(() => {
-        setNotification({ message: null, style: null })
-      }, 5000)
-    }
-  } */
-
-  /* const removeBlog = async (id) => {
-    console.log('REMOVE id', id)
-    if (window.confirm('Do you really want to remove this post?')) {
-      try {
-        await blogService.remove(id)
-        setBlogs(await blogService.getAll())
-
-        const newNotification = {
-          message: 'Blog removed!',
-          style: 'success'
-        }
-        setNotification( newNotification )
-        setTimeout(() => {
-          setNotification({ message: null, style: null })
-        }, 5000)
-
-      } catch (exception) {
-        const newNotification = {
-          message: 'Blog not removed.',
-          style: 'failure'
-        }
-        setNotification( newNotification )
-        setTimeout(() => {
-          setNotification({ message: null, style: null })
-        }, 5000)
-      }
-    }
-  } */
-
   const handleBlogObjectChange = (event) => {
     console.log({ [event.target.name]: event.target.value })
     setNewBlogObject({ ...newBlogObject, [event.target.name]: event.target.value })
@@ -192,7 +142,8 @@ const App = () => {
     try {
       console.log('logging in...')
       const user = await loginService.login({
-        username, password,
+        username: username.value,
+        password: password.value
       })
 
       window.localStorage.setItem(
@@ -200,8 +151,8 @@ const App = () => {
       )
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
       const newNotification = {
         message: 'Login successful',
         style: 'success'
@@ -265,7 +216,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className='mainPage'>
       <h1>Blogit</h1>
       <Notification notification={notification} />
 
@@ -273,16 +224,14 @@ const App = () => {
         <LoginForm
           handleLogin={handleLogin}
           username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword} /> :
+          password={password} /> :
         <div>
           <p>{user.name} logged in </p>
           <button onClick={() => handleLogout()}>Logout</button>
           <h2>Create new blog</h2>
           {blogObjectForm()}
 
-          <h2>Blogs</h2>
+          <h2 className='latestBlogs'>Latest blogs</h2>
           {rows()}
         </div>
       }

@@ -68,7 +68,7 @@ describe('Blog contents', () => {
   })
 
 
-  test('Blog clicking the button calls event handler twice', async () => {
+  test('Clicking blog button calls event handler twice', async () => {
 
     const mockHandler = jest.fn()
 
@@ -83,7 +83,7 @@ describe('Blog contents', () => {
     expect(mockHandler.mock.calls.length).toBe(2)
   })
 
-  test('renders its children', () => {
+  test('Renders its children', () => {
     const component = render(
       <Blog
         key={blog.id}
@@ -96,7 +96,7 @@ describe('Blog contents', () => {
     component.container.querySelector('.blogContentFull')
   })
 
-  test('at start the children are not displayed', () => {
+  test('At start the children are not displayed', () => {
     const component = render(
       <Blog
         key={blog.id}
@@ -112,7 +112,7 @@ describe('Blog contents', () => {
     expect(div).toHaveStyle('display: none')
   })
 
-  test('after clicking the button, children are displayed', () => {
+  test('After clicking the button, children are displayed', () => {
     const component = render(
       <Blog
         key={blog.id}
