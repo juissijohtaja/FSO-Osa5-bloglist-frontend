@@ -29,6 +29,7 @@ const useResource = (baseUrl) => {
       .then(initialNotes => {
         setResources(initialNotes)
       })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   
 
